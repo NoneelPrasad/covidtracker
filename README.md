@@ -15,3 +15,4 @@ A Simple COVID-19 Dashboard for Fiji built with ASP.NET Core 3.1 Backend.
 - Bootstrap / Responsive
 - Open Sourced
 - External API for curated data - Public API
+- Github Actions CI/CD with heroku
