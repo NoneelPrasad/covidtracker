@@ -1,0 +1,41 @@
+name: Deploy to Heroku
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    name: Deploy to Heroku
+    runs-on: ubuntu-latest
+    steps:
+
+    # Clone the repository
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # Build Docker image
+    - name: Docker build
+      uses: gonuit/heroku-docker-deploy@v1.3.3 
+      with:
+
+        email: ${{ secrets.HEROKU_EMAIL }}
+
+
+        heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+
+
+        heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+
+
+        dockerfile_directory: ./
+
+
+        dockerfile_name: Dockerfile
+
+
+        docker_options: "--no-cache"
+
+     
+        process_type: web
+
