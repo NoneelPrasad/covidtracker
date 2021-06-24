@@ -1,0 +1,385 @@
+﻿@page
+@model IndexModel
+@using Newtonsoft.Json
+@{
+    ViewData["Title"] = "Home page";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+<link href="~/css/waitMe.css" rel="stylesheet" />
+<style>
+    .meta-badge {
+        width: fit-content;
+        background: red;
+        border-radius: 5px;
+        padding: 6px;
+        color: white;
+        font-weight: bold;
+        font-size: 12px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+</style>
+<div style="display:flex;">
+    <img src="~/img/virus.png" style="height: 35px; padding-right: 10px;" />
+    <h1 class="h2 mb-2 text-gray-800">COVID-19 Tracker</h1>
+</div>
+
+@*<small>Built with ASP.NET Core 3.1 , Bootstrap and JS. Real-time Curated Data from api.covid19india.org</small>*@
+<div class="meta-badge" id="dateLastUpdatedOn" style="background: #1cc88a !important;color:white!important">Data for @Model.ViewModel.Summary.Date</div>
+
+<p></p>
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800" id="countryStateLabel">Fiji</h1>
+    <div class="input-group" style="width:230px!important">
+        <input type="text" class="form-control float-right" id="selectedDate">
+        <div class="input-group-append">
+            <span class="input-group-text">
+                <i class="far fa-calendar-alt"></i>
+            </span>
+        </div>
+    </div>
+</div>
+<div class="containerBlock">
+    <div class="row">
+
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Active Cases</div>
+                            @*<div id="testedUpdatedDate" class="meta-badge" style="background:#1cc88a!important ">As of @Model.ViewModel.Stats.Meta.Tested.Last_Updated.ToString("dd MMMM, yyyy")</div>*@
+                            <div id="testedTotal" class="h3 mb-0 font-weight-bold text-gray-800 Count">@Model.ViewModel.Summary.Active</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Confirmed Cases</div>
+                            @*<div class="meta-badge" style="        background: #4e73df;
+                                display: flex;">
+                                                    <span>+ </span>
+                                                    <div id="confirmedDelta" class="Count">
+                                                        @Model.ViewModel.Stats.Delta.Confirmed
+                                                    </div>
+                                                </div>*@
+                            <div id="confirmedTotal" class="h3 mb-0 font-weight-bold text-gray-800 Count">@Model.ViewModel.Summary.Confirmed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        @*<div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Tested Cases</div>
+                                <div id="testedUpdatedDate" class="meta-badge" style="background:#1cc88a!important ">As of @Model.ViewModel.Stats.Meta.Tested.Last_Updated.ToString("dd MMMM, yyyy")</div>
+                                <div id="testedTotal" class="h3 mb-0 font-weight-bold text-gray-800 Count">@Model.ViewModel.Stats.Total.Tested</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Recoveries</div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    @*<div class="meta-badge" style="background:#36b9cc!important;display:flex;">
+                                            <span>+ </span>
+                                            <div id="recoveredDelta" class="Count">
+                                                @Model.ViewModel.Stats.Delta.Recovered
+                                            </div>
+                                        </div>*@
+                                    <div id="recoveredTotal" class="h3 mb-0 mr-3 font-weight-bold text-gray-800 Count">@Model.ViewModel.Summary.Recovered</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Requests Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Deceased</div>
+                            @*<div class="meta-badge" style="background:#e74a3b!important;display:flex;">
+                                    <span>+ </span>
+                                    <div id="deceasedDelta" class="Count">
+                                        @Model.ViewModel.Stats.Delta.Deceased
+                                    </div>
+                                </div>*@
+                            <div id="deceasedTotal" class="h3 mb-0 font-weight-bold text-gray-800 Count">@Model.ViewModel.Summary.Deaths</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+
+        <div class="col-xl-12">
+
+             Highest Active Cases by Month (@DateTime.Now.Year)
+            <div class="card border-left-primary shadow mb-4">
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="myAreaChart"></canvas>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script src="~/js/waitMe.js"></script>
+    <script type="text/javascript">
+        $('#selectedDate').daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: false,
+            timePicker: false,
+            locale: {
+                format: 'DD MMM, YYYY'
+            },
+            maxDate: new Date()
+        });
+
+
+    </script>
+    <script src="~/js/dashboard.js"></script>
+    <!-- Page level custom scripts -->
+
+    <script>
+
+    $(document).ready(async function () {
+     var label = @Html.Raw(JsonConvert.SerializeObject(ViewData["label"]));
+     var value = @Html.Raw(JsonConvert.SerializeObject(ViewData["value"]));
+console.log(label);
+console.log(value);
+       
+        animateNumbers();
+    
+        $('#selectedDate').on('change', async function () {
+          
+            $('.containerBlock').waitMe({
+                effect: 'bounce',
+                text: 'Please wait...',
+                bg: 'rgba(255, 255, 255, 0.7)',
+                color: '#000',
+                maxSize: '',
+                waitTime: -1,
+                textPos: 'vertical',
+                fontSize: '',
+                source: '',
+                onClose: function () { }
+            });
+            var data = { id: "TT", text: "India" }
+
+            await loadData(data);
+            $('.containerBlock').waitMe('hide');
+        });
+
+        // Set new default font family and font color to mimic Bootstrap's default styling
+        Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+        Chart.defaults.global.defaultFontColor = '#858796';
+
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            // *     example: number_format(1234.56, 2, ',', ' ');
+            // *     return: '1 234,56'
+            number = (number + '').replace(',', '').replace(' ', '');
+            var n = !isFinite(+number) ? 0 : +number,
+                prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                s = '',
+                toFixedFix = function (n, prec) {
+                    var k = Math.pow(10, prec);
+                    return '' + Math.round(n * k) / k;
+                };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1).join('0');
+            }
+            return s.join(dec);
+        }
+
+        // Area Chart Example
+        var ctx = document.getElementById("myAreaChart");
+        var myLineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: label,
+                datasets: [{
+                    label: "Cases",
+                    lineTension: 0.3,
+                    backgroundColor: "rgba(78, 115, 223, 0.05)",
+                    borderColor: "rgba(78, 115, 223, 1)",
+                    pointRadius: 3,
+                    pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                    pointBorderColor: "rgba(78, 115, 223, 1)",
+                    pointHoverRadius: 3,
+                    pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                    pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                    pointHitRadius: 10,
+                    pointBorderWidth: 2,
+                    data: value,
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 25,
+                        top: 25,
+                        bottom: 0
+                    }
+                },
+                scales: {
+                    xAxes: [{
+                        time: {
+                            unit: 'date'
+                        },
+                        gridLines: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 7
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            maxTicksLimit: 5,
+                            padding: 10,
+                            // Include a dollar sign in the ticks
+                            callback: function (value, index, values) {
+                                return number_format(value);
+                            }
+                        },
+                        gridLines: {
+                            color: "rgb(234, 236, 244)",
+                            zeroLineColor: "rgb(234, 236, 244)",
+                            drawBorder: false,
+                            borderDash: [2],
+                            zeroLineBorderDash: [2]
+                        }
+                    }],
+                },
+                legend: {
+                    display: false
+                },
+                tooltips: {
+                    backgroundColor: "rgb(255,255,255)",
+                    bodyFontColor: "#858796",
+                    titleMarginBottom: 10,
+                    titleFontColor: '#6e707e',
+                    titleFontSize: 14,
+                    borderColor: '#dddfeb',
+                    borderWidth: 1,
+                    xPadding: 15,
+                    yPadding: 15,
+                    displayColors: false,
+                    intersect: false,
+                    mode: 'index',
+                    caretPadding: 10,
+                    callbacks: {
+                        label: function (tooltipItem, chart) {
+                            var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                            return datasetLabel + ': ' + number_format(tooltipItem.yLabel);
+                        }
+                    }
+                }
+            }
+        });
+
+    });
+
+    function animateNumbers() {
+        $('.Count').each(function () {
+            $(this).prop('Counter', 0).animate({
+                Counter: $(this).text()
+            }, {
+                duration: 1000,
+                easing: 'swing',
+                step: function (now) {
+                    $(this).text(Math.ceil(now).toLocaleString('en'));
+                }
+            });
+        });
+    }
+
+    async function loadData(data) {
+        var date = new Date($('#selectedDate').val());
+        var url = "/api/stats?code=" + data.id + "&&date=" + moment(date).format("YYYY-MM-DDT00:00:00") + "Z";
+        console.log(url)
+        let response = await fetch(url);
+
+        if (response.ok) {
+            //$('#wait').waitMe({
+            //    effect: 'bounce',
+            //    text: 'Loading',
+            //    bg: rgba(255, 255, 255, 0.7),
+            //    color: '#000',
+            //    maxSize: 30,
+            //    waitTime: -1,
+            //    textPos: 'vertical',
+            //    fontSize: '',
+            //    source: '',
+            //    onClose: function () { }
+            //});
+
+            let json = await response.json();
+            console.log(json);
+            $('#countryStateLabel').text(json.country);
+            $('#dateLastUpdatedOn').text('Data for ' + json.date);
+            $('#testedTotal').text(parseInt(json.active));
+            $('#confirmedTotal').text(parseInt(json.confirmed));
+            $('#recoveredTotal').text(parseInt(json.recovered));
+            $('#deceasedTotal').text(parseInt(json.deaths));
+
+            animateNumbers();
+
+          
+
+        } else {
+            alert("HTTP-Error: " + response.status);
+
+        }
+    }
+    </script>
+
+}
+
